@@ -70,11 +70,11 @@ public class FamilyTree
             // the nodes of a tree is like traversing a linked list. If that isn’t clear,
             // draw a tree, mark any leaf node, and then mark its ancestors in order from
             // recent to ancient. Expect a question about this on the final exam.
-            TreeNode current = this; 
+            TreeNode current = this.parent; 
             
-            while(current != null) { 
-            	current = current.parent; 
+            while(current != null) {  
             	ancestors.add(current);
+            	current = current.parent;
             }
             return ancestors;
         }
@@ -134,7 +134,8 @@ public class FamilyTree
 	private void addLine(String line) throws TreeException
 	{
 		// Extract parent and array of children.
-		int colonIndex = line.indexOf(';'); //should be the index of the colon in line.
+		int colonIndex = line.indexOf(':'); //should be the index of the colon in line.
+		System.out.println(line);
 		
 		if (colonIndex < 0)
 			throw new TreeException("bad tree.");
@@ -143,9 +144,11 @@ public class FamilyTree
 				           
 		String childrenString =  line.substring(colonIndex + 1); //The substring of line that starts just after colonIndex and goes through the end of
 				                  // the line. You'll use a different version of substring().
-		String[] childrenArray =  childrenString.split(childrenString); //Call childrenString.split(). Check the API for details. The result will be an array
+		String[] childrenArray =  childrenString.split(","); //Call childrenString.split(). Check the API for details. The result will be an array
 				                    //of strings, with the separating commas thrown away.
 		
+		
+		System.out.println(parent);
 		// Find parent node. If root is null then the tree is empty and the
 		// parent node must be constructed. Otherwise the parent node should be 
 		// somewhere in the tree.
@@ -154,9 +157,9 @@ public class FamilyTree
 			parentNode = root = new TreeNode(parent);
 		else
 		{
-			parentNode = root.getNodeWithName(root.name);  //There's a method in Node that searches for a named node. 
+			parentNode = root.getNodeWithName(parent);  //There's a method in Node that searches for a named node. 
 			if (parentNode == null) { 
-				throw new TreeException("Not found"); 
+				throw new TreeException("Not found: "); 
 				//If the parent node wasn't found, there must have been something wrong in the 
 			}
 				//data file. Throw an exception.
@@ -180,16 +183,17 @@ public class FamilyTree
 	TreeNode getMostRecentCommonAncestor(String name1, String name2) throws TreeException
 	{
 		// Get nodes for input names.
-		TreeNode node1 = root.???		// node whose name is name1
+		TreeNode node1 = root.getNodeWithName(name1);		// node whose name is name1
 		if (node1 == null)
-			??? Throw a TreeException with a useful message
-		TreeNode node2 = root.???		// node whose name is name2
+			throw new TreeException("Not found"); // Throw a TreeException with a useful message
+		
+		TreeNode node2 = root.getNodeWithName(name2);		// node whose name is name2
 		if (node2 == null)
-			??? Throw TreeException with a useful message
+			throw new TreeException("Not found"); // Throw TreeException with a useful message
 		
 		// Get ancestors of node1 and node2.
-		ArrayList<TreeNode> ancestorsOf1 = ???
-		ArrayList<TreeNode> ancestorsOf2 = ???
+		ArrayList<TreeNode> ancestorsOf1 = node1.collectAncestorsToList();
+		ArrayList<TreeNode> ancestorsOf2 = node2.collectAncestorsToList();
 		
 		// Check members of ancestorsOf1 in order until you find a node that is also
 		// an ancestor of 2. 
